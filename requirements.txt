@@ -1,0 +1,23 @@
+# Núcleo LangChain
+langchain-core>=1.2.16,<2.0.0
+langchain-community>=0.4.0,<0.5.0
+
+# Proveedor Gemini (LLM + Embeddings)
+langchain-google-genai>=4.2.0,<5.0.0
+
+# Proveedor Cohere (LLM + Embeddings)
+langchain-cohere>=0.6.0,<0.7.0
+
+langchain-text-splitters>=1.1.0,<2.0.0
+langgraph>=1.2.0,<2.0.0
+
+faiss-cpu>=1.11.0
+pymupdf>=1.26.0
+pydantic>=2.11.0
+python-dotenv>=1.1.0
+fastapi>=0.110.0
+uvicorn>=0.28.0
+
+# Tokenizador para el trozado de chunks (no genera embeddings)
+transformers>=5.0.0,<6.0.0
+sentencepiece>=0.2.0,<1.0.0
