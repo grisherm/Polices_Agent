@@ -1,0 +1,5 @@
+{
+  "huella": "f65467f106d0f1e3133af2717bc7ff47e94da7fa89a5250334a5cfa2e397a4bd",
+  "cantidad_chunks": 31,
+  "embeddings": "cohere:embed-v4.0"
+}

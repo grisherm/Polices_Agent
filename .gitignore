@@ -1,0 +1,33 @@
+# Archivos y carpetas que no se deben subir
+
+# Entorno virtual local
+.venv/
+venv/
+env/
+
+# Variables sensibles
+.env
+.env.*
+!.env.example
+
+
+
+# Índices y artefactos generados por el RAG
+faiss_index/
+
+
+# Resultados temporales de ejecución
+.ipynb_checkpoints/
+*.log
+
+# Dependencias instaladas localmente por error
+node_modules/
+
+
+# Caché generada por Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Configuración local de VS Code
+.vscode/
