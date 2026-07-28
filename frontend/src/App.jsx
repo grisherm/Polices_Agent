@@ -9,12 +9,11 @@ import {
   Check,
   ChevronDown,
   CircleGauge,
+  Clock3,
   Database,
   FileText,
-  History,
   Menu,
   MessageSquareText,
-  PanelLeftClose,
   Plus,
   RefreshCw,
   Send,
@@ -73,6 +72,18 @@ const ACTION_LABELS = {
   FUERA_DE_AMBITO:  { label: "Fuera de ámbito",         tone: "neutral" },
   SIN_INFORMACION:  { label: "Sin información",         tone: "neutral" },
 };
+
+const AREA_META = {
+  "Recursos Humanos y Convivencia": { short: "RRHH", tone: "area-indigo" },
+  "Tecnología y Seguridad de la Información": { short: "Tecnología", tone: "area-sky" },
+  "Salud y Seguridad en el Trabajo": { short: "SST", tone: "area-green" },
+  "Finanzas y Administración": { short: "Finanzas", tone: "area-amber" },
+  General: { short: "General", tone: "area-slate" },
+};
+
+function areaMeta(area) {
+  return AREA_META[area] || AREA_META.General;
+}
 
 function makeId(prefix = "id") {
   if (globalThis.crypto?.randomUUID) return `${prefix}_${crypto.randomUUID()}`;
@@ -139,21 +150,6 @@ function BrandMark({ compact = false }) {
   return (
     <div className={`brand-mark ${compact ? "brand-mark--compact" : ""}`}>
       <span>N</span>
-      <i />
-    </div>
-  );
-}
-
-function StatusPill({ status }) {
-  const checking = status === "checking";
-  const online = status === "online";
-  const Icon = checking ? RefreshCw : online ? Wifi : WifiOff;
-  const label = checking ? "Conectando…" : online ? "Todo en línea" : "Sin conexión";
-
-  return (
-    <div className={`status-pill status-pill--${status}`}>
-      <Icon size={14} className={checking ? "spin" : ""} />
-      <span>{label}</span>
     </div>
   );
 }
@@ -197,58 +193,54 @@ function CitationList({ citations }) {
 function Message({ message, onOpenTicket }) {
   const isUser = message.role === "user";
   const action = ACTION_LABELS[message.action] || ACTION_LABELS.SALUDO;
+  const area = !isUser && message.area ? areaMeta(message.area) : null;
 
   return (
     <motion.article
-      className={`message ${isUser ? "message--user" : "message--assistant"} ${message.error ? "message--error" : ""
-        }`}
-      initial={{ opacity: 0, y: 14, scale: 0.985 }}
+      className={`card-msg ${isUser ? "card-msg--user" : "card-msg--assistant"} ${
+        area ? area.tone : ""
+      } ${message.error ? "card-msg--error" : ""}`}
+      initial={{ opacity: 0, y: 12, scale: 0.99 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
     >
-      {!isUser && (
-        <div className="message__avatar">
-          {message.error ? <AlertTriangle size={17} /> : <Bot size={18} />}
-        </div>
-      )}
-      <div className="message__body">
-        <div className="message__topline">
-          {!isUser && <strong>Nexus</strong>}
-          <span>{displayTime(message.createdAt)}</span>
-          {!isUser && message.action && (
-            <span className={`action-badge action-badge--${action.tone}`}>
-              {action.tone === "success" && <Check size={12} />}
-              {action.label}
-            </span>
-          )}
-        </div>
-        <div className="message__content markdown-body">
-          {isUser ? (
-            <p>{message.content}</p>
-          ) : (
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
-          )}
-        </div>
-        {!isUser && message.triage && !message.error && (
-          <div className="message__diagnostic">
-            <Activity size={13} />
-            Ruta: {message.triage.decision?.replaceAll("_", " ")}
-            <span />
-            Urgencia: {message.triage.urgencia}
-          </div>
-        )}
-        <CitationList citations={message.citations} />
-        {!isUser && message.action === "ABRIR_TICKET" && message.ticketDraft && (
-          <button
-            type="button"
-            className="ticket-action-button"
-            onClick={() => onOpenTicket(message.ticketDraft)}
-          >
-            <Send size={15} />
-            Completar ticket
-          </button>
+      <div className="card-msg__meta">
+        {!isUser && <strong>Nexus</strong>}
+        {area && <span className="area-tag">{area.short}</span>}
+        <span className="card-msg__time">{displayTime(message.createdAt)}</span>
+      </div>
+      <div className="card-msg__content markdown-body">
+        {isUser ? (
+          <p>{message.content}</p>
+        ) : (
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
         )}
       </div>
+      {!isUser && message.action && (
+        <span className={`action-badge action-badge--${action.tone}`}>
+          {action.tone === "success" && <Check size={12} />}
+          {action.label}
+        </span>
+      )}
+      {!isUser && message.triage && !message.error && (
+        <div className="message__diagnostic">
+          <Activity size={13} />
+          Ruta: {message.triage.decision?.replaceAll("_", " ")}
+          <span />
+          Urgencia: {message.triage.urgencia}
+        </div>
+      )}
+      <CitationList citations={message.citations} />
+      {!isUser && message.action === "ABRIR_TICKET" && message.ticketDraft && (
+        <button
+          type="button"
+          className="ticket-action-button"
+          onClick={() => onOpenTicket(message.ticketDraft)}
+        >
+          <Send size={15} />
+          Completar ticket
+        </button>
+      )}
     </motion.article>
   );
 }
@@ -256,77 +248,39 @@ function Message({ message, onOpenTicket }) {
 function ThinkingMessage() {
   return (
     <motion.div
-      className="message message--assistant thinking"
-      initial={{ opacity: 0, y: 12 }}
+      className="thinking__card"
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -6 }}
     >
-      <div className="message__avatar">
-        <Bot size={18} />
-      </div>
-      <div className="thinking__card">
-        <div className="thinking__dots"><i /><i /><i /></div>
-        <span>Consultando políticas y verificando el respaldo…</span>
-      </div>
+      <div className="thinking__dots"><i /><i /><i /></div>
+      <span>Consultando políticas y verificando el respaldo…</span>
     </motion.div>
   );
 }
 
-function Hero({ onSuggestion }) {
+function WelcomeCard({ onSuggestion }) {
   return (
-    <motion.div className="hero" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      <div className="hero__visual" aria-hidden="true">
-        <motion.div
-          className="hero__orbit hero__orbit--one"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
-        />
-        <motion.div
-          className="hero__orbit hero__orbit--two"
-          animate={{ rotate: -360 }}
-          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-        />
-        <motion.div
-          animate={{ y: [0, -7, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <BrandMark />
-        </motion.div>
-      </div>
-      <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.12 }}
-      >
-        <span className="hero__kicker"><Sparkles size={14} /> Copiloto Nexus</span>
-        <h1>Cero rodeos.<br /><em>Directo al dato que necesitas.</em></h1>
-        <p>
-          Pregunta lo que sea sobre nuestras políticas internas y recibe una
-          respuesta verificada, con su fuente exacta, en segundos.
-        </p>
-      </motion.div>
-      <div className="suggestion-row">
-        {SUGGESTIONS.map((suggestion, index) => {
+    <motion.div className="welcome-card" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+      <span className="welcome-card__kicker"><Sparkles size={13} /> Copiloto Nexus</span>
+      <h1>Cero rodeos. Directo al dato que necesitas.</h1>
+      <p>
+        Pregunta lo que sea sobre nuestras políticas internas y recibe una respuesta
+        verificada, con su fuente exacta, en segundos.
+      </p>
+      <div className="welcome-card__chips">
+        {SUGGESTIONS.map((suggestion) => {
           const Icon = suggestion.icon;
           return (
-            <motion.button
+            <button
               type="button"
-              className="suggestion-card"
+              className="chip-suggestion"
               key={suggestion.title}
               onClick={() => onSuggestion(suggestion.prompt)}
-              initial={{ opacity: 0, x: 18 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.18 + index * 0.06 }}
-              whileHover={{ y: -4 }}
-              whileTap={{ scale: 0.98 }}
             >
-              <span className="suggestion-card__icon"><Icon size={17} /></span>
-              <span>
-                <small>{suggestion.eyebrow}</small>
-                <strong>{suggestion.title}</strong>
-              </span>
-              <Send size={14} className="suggestion-card__arrow" />
-            </motion.button>
+              <Icon size={14} />
+              {suggestion.title}
+            </button>
           );
         })}
       </div>
@@ -402,6 +356,139 @@ function PoliciesPanel({ open, onClose, policies, status }) {
   );
 }
 
+function HistoryPanel({ open, onClose, conversations, activeId, pendingId, onSelect, onDelete, onNew }) {
+  return (
+    <AnimatePresence>
+      {open && (
+        <>
+          <motion.button
+            aria-label="Cerrar historial"
+            className="drawer-backdrop"
+            type="button"
+            onClick={onClose}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          />
+          <motion.aside
+            className="history-drawer"
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ type: "spring", stiffness: 320, damping: 32 }}
+          >
+            <div className="policy-drawer__head">
+              <div>
+                <span className="eyebrow">Tus conversaciones</span>
+                <h2>Historial</h2>
+              </div>
+              <button className="icon-button" type="button" onClick={onClose} aria-label="Cerrar">
+                <X size={19} />
+              </button>
+            </div>
+            <button className="new-chat" type="button" onClick={onNew}>
+              <Plus size={17} />
+              Nueva conversación
+            </button>
+            <div className="policy-drawer__list">
+              {conversations.map((conversation) => (
+                <div
+                  className={`conversation-item ${conversation.id === activeId ? "conversation-item--active" : ""}`}
+                  key={conversation.id}
+                >
+                  <button className="conversation-item__select" type="button" onClick={() => onSelect(conversation.id)}>
+                    <MessageSquareText size={16} />
+                    <span>
+                      <strong>{conversation.title}</strong>
+                      <small>{conversation.messages.length} mensajes</small>
+                    </span>
+                  </button>
+                  <button
+                    className="conversation-item__delete"
+                    type="button"
+                    aria-label="Eliminar conversación"
+                    onClick={(event) => onDelete(conversation.id, event)}
+                    disabled={conversation.id === pendingId}
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </motion.aside>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function ContextPanel({ open, onClose, area, relatedPolicies, metrics, onOpenMetrics, apiStatus }) {
+  const meta = areaMeta(area);
+  const entries = Object.entries(metrics?.por_area || {}).sort((a, b) => b[1] - a[1]);
+  const maxValue = Math.max(1, ...entries.map(([, value]) => value));
+
+  return (
+    <aside className={`context-panel ${open ? "context-panel--open" : ""}`}>
+      <button className="context-panel__close icon-button" type="button" onClick={onClose} aria-label="Cerrar panel">
+        <X size={18} />
+      </button>
+
+      <div className="context-block">
+        <h3>Área detectada</h3>
+        <div className={`area-badge ${meta.tone}`}>
+          <span className="area-badge__dot" />
+          <div>
+            <strong>{area ? meta.short : "Sin consultas aún"}</strong>
+            <small>{area || "Escribe tu primera pregunta"}</small>
+          </div>
+        </div>
+      </div>
+
+      <div className="context-block">
+        <h3>Políticas relacionadas</h3>
+        {relatedPolicies.length ? (
+          <div className="quick-list">
+            {relatedPolicies.slice(0, 4).map((policy, index) => (
+              <div className="quick-item" key={`${policy.fuente}-${index}`}>
+                <span className="quick-item__icon"><FileText size={14} /></span>
+                {displayPolicyName(policy.fuente)}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="context-empty">Aparecerán aquí en cuanto Nexus cite una política.</p>
+        )}
+      </div>
+
+      <div className="context-block context-block--grow">
+        <h3>Pulso del copiloto</h3>
+        <div className="stat-widget">
+          <div className="stat-widget__head">
+            <span>Consultas por área</span>
+            <span className={`status-dot status-dot--${apiStatus}`} />
+          </div>
+          {entries.length ? (
+            entries.slice(0, 4).map(([label, value]) => (
+              <div className="bar-row" key={label}>
+                <span className="bar-row__label">{areaMeta(label).short}</span>
+                <div className="bar-track">
+                  <div className="bar-fill" style={{ width: `${(value / maxValue) * 100}%` }} />
+                </div>
+                <span className="bar-row__value">{value}</span>
+              </div>
+            ))
+          ) : (
+            <p className="context-empty context-empty--dark">Aún no hay datos de uso.</p>
+          )}
+          <button className="stat-widget__link" type="button" onClick={onOpenMetrics}>
+            Ver panel completo →
+          </button>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
 export default function App() {
   const initialConversations = useMemo(() => loadConversations(), []);
   const [conversations, setConversations] = useState(initialConversations);
@@ -412,8 +499,10 @@ export default function App() {
   const [pendingConversationId, setPendingConversationId] = useState(null);
   const [apiStatus, setApiStatus] = useState("checking");
   const [policies, setPolicies] = useState([]);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [metrics, setMetrics] = useState(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const [policiesOpen, setPoliciesOpen] = useState(false);
+  const [contextOpen, setContextOpen] = useState(false);
   const [ticketDraft, setTicketDraft] = useState(null);
   const [showMetrics, setShowMetrics] = useState(false);
   const scrollRef = useRef(null);
@@ -425,6 +514,29 @@ export default function App() {
   );
   const pending = Boolean(pendingConversationId);
 
+  const currentArea = useMemo(() => {
+    const msgs = activeConversation?.messages || [];
+    for (let i = msgs.length - 1; i >= 0; i -= 1) {
+      if (msgs[i].role === "assistant" && msgs[i].area) return msgs[i].area;
+    }
+    return null;
+  }, [activeConversation]);
+
+  const relatedPolicies = useMemo(() => {
+    const msgs = activeConversation?.messages || [];
+    for (let i = msgs.length - 1; i >= 0; i -= 1) {
+      if (msgs[i].role === "assistant" && msgs[i].citations?.length) {
+        const seen = new Set();
+        return msgs[i].citations.filter((citation) => {
+          if (seen.has(citation.fuente)) return false;
+          seen.add(citation.fuente);
+          return true;
+        });
+      }
+    }
+    return [];
+  }, [activeConversation]);
+
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(conversations));
     localStorage.setItem(ACTIVE_KEY, activeId);
@@ -435,6 +547,15 @@ export default function App() {
       setActiveId(conversations[0]?.id || "");
     }
   }, [activeId, conversations]);
+
+  const fetchMetrics = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/metricas`, { signal: AbortSignal.timeout(8000) });
+      if (response.ok) setMetrics(await response.json());
+    } catch {
+      // El panel de contexto simplemente queda sin datos de uso.
+    }
+  }, []);
 
   const checkBackend = useCallback(async () => {
     setApiStatus("checking");
@@ -451,11 +572,12 @@ export default function App() {
         const data = await policyResponse.json();
         setPolicies(Array.isArray(data.politicas) ? data.politicas : []);
       }
+      fetchMetrics();
     } catch {
       setApiStatus("offline");
       setPolicies([]);
     }
-  }, []);
+  }, [fetchMetrics]);
 
   useEffect(() => {
     checkBackend();
@@ -477,7 +599,7 @@ export default function App() {
     setConversations((current) => [conversation, ...current]);
     setActiveId(conversation.id);
     setInput("");
-    setSidebarOpen(false);
+    setHistoryOpen(false);
     window.setTimeout(() => textareaRef.current?.focus(), 120);
   }
 
@@ -488,8 +610,9 @@ export default function App() {
         startNewConversation();
       }
       if (event.key === "Escape") {
-        setSidebarOpen(false);
+        setHistoryOpen(false);
         setPoliciesOpen(false);
+        setContextOpen(false);
       }
     }
 
@@ -578,6 +701,7 @@ export default function App() {
         role: "assistant",
         content: data.respuesta || "El agente no devolvió contenido.",
         action: data.accion_final,
+        area: data.area || null,
         triage: data.triaje,
         ticketDraft:
           data.accion_final === "ABRIR_TICKET"
@@ -601,6 +725,7 @@ export default function App() {
         messages: [...conversation.messages, assistantMessage],
       }));
       setApiStatus("online");
+      fetchMetrics();
     } catch (error) {
       const assistantMessage = {
         id: makeId("message"),
@@ -645,18 +770,21 @@ export default function App() {
     return <MetricsPage apiUrl={API_URL} onBack={() => setShowMetrics(false)} />;
   }
 
+  const areaEntries = Object.values(AREA_META).filter((entry) => entry !== AREA_META.General);
+
   return (
     <div className="app-shell">
-      <div className="ambient ambient--one" />
-      <div className="ambient ambient--two" />
-
       <AnimatePresence>
-        {sidebarOpen && (
+        {(historyOpen || policiesOpen || contextOpen) && (
           <motion.button
-            aria-label="Cerrar menú"
+            aria-label="Cerrar panel"
             className="mobile-backdrop"
             type="button"
-            onClick={() => setSidebarOpen(false)}
+            onClick={() => {
+              setHistoryOpen(false);
+              setPoliciesOpen(false);
+              setContextOpen(false);
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -664,132 +792,66 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      <aside className={`sidebar ${sidebarOpen ? "sidebar--open" : ""}`}>
-        <div className="sidebar__brand">
-          <BrandMark compact />
-          <div>
-            <strong>Nexus <span>IA</span></strong>
-            <small>Copiloto interno</small>
-          </div>
-          <button
-            className="sidebar__close icon-button"
-            type="button"
-            onClick={() => setSidebarOpen(false)}
-            aria-label="Cerrar menú"
-          >
-            <PanelLeftClose size={18} />
-          </button>
-        </div>
-
-        <button className="new-chat" type="button" onClick={startNewConversation}>
-          <Plus size={18} />
-          Nueva conversación
-          <span>⌘ N</span>
+      <aside className="rail">
+        <BrandMark compact />
+        <button className="rail__icon rail__icon--accent" type="button" onClick={startNewConversation} aria-label="Nueva conversación" title="Nueva conversación">
+          <Plus size={19} />
         </button>
-
-        <div className="sidebar__section-head">
-          <span><History size={14} /> Conversaciones</span>
-          <small>{conversations.length}</small>
-        </div>
-
-        <nav className="conversation-list" aria-label="Conversaciones">
-          {conversations.map((conversation) => (
-            <div
-              className={`conversation-item ${conversation.id === activeId ? "conversation-item--active" : ""}`}
-              key={conversation.id}
-            >
-              <button
-                className="conversation-item__select"
-                type="button"
-                onClick={() => {
-                  setActiveId(conversation.id);
-                  setSidebarOpen(false);
-                }}
-              >
-                <MessageSquareText size={16} />
-                <span>
-                  <strong>{conversation.title}</strong>
-                  <small>{conversation.messages.length} mensajes</small>
-                </span>
-              </button>
-              <button
-                className="conversation-item__delete"
-                type="button"
-                aria-label="Eliminar conversación"
-                onClick={(event) => deleteConversation(conversation.id, event)}
-                disabled={conversation.id === pendingConversationId}
-              >
-                <Trash2 size={14} />
-              </button>
-            </div>
-          ))}
+        <nav className="rail__nav">
+          <button className="rail__icon" type="button" onClick={() => setHistoryOpen(true)} aria-label="Historial" title="Historial">
+            <Clock3 size={19} />
+          </button>
+          <button className="rail__icon" type="button" onClick={() => setPoliciesOpen(true)} aria-label="Políticas" title="Base de políticas">
+            <BookOpen size={19} />
+          </button>
+          <button className="rail__icon" type="button" onClick={() => setShowMetrics(true)} aria-label="Panel de uso" title="Panel de uso">
+            <BarChart3 size={19} />
+          </button>
+          <button className="rail__icon rail__icon--mobile-only" type="button" onClick={() => setContextOpen(true)} aria-label="Contexto" title="Contexto">
+            <Menu size={19} />
+          </button>
         </nav>
-
-        <div className="sidebar__footer">
-          <button className="knowledge-card" type="button" onClick={() => setPoliciesOpen(true)}>
-            <span><BookOpen size={17} /></span>
-            <div>
-              <strong>Base de políticas</strong>
-              <small>{policies.length ? `${policies.length} documentos activos` : "Consultar cobertura"}</small>
-            </div>
-            <ChevronDown size={15} className="side-arrow" />
-          </button>
-          <button className="knowledge-card" type="button" onClick={() => setShowMetrics(true)}>
-            <span><BarChart3 size={17} /></span>
-            <div>
-              <strong>Panel de uso</strong>
-              <small>Consultas por área y tipo</small>
-            </div>
-          </button>
-          <StatusPill status={apiStatus} />
-        </div>
+        <div className={`rail__status status-dot--${apiStatus}`} title={apiStatus === "online" ? "Todo en línea" : apiStatus === "checking" ? "Conectando…" : "Sin conexión"} />
       </aside>
 
-      <main className="workspace">
+      <main className="main">
         <header className="topbar">
-          <div className="topbar__left">
-            <button className="menu-button icon-button" type="button" onClick={() => setSidebarOpen(true)}>
-              <Menu size={20} />
-            </button>
-            <div>
-              <span className="eyebrow">Copiloto Nexus</span>
-              <h2>{activeConversation?.title || "Nueva conversación"}</h2>
-            </div>
+          <div>
+            <span className="eyebrow">Copiloto Nexus</span>
+            <h2>{activeConversation?.title || "Nueva conversación"}</h2>
           </div>
-          <div className="topbar__actions">
-            <button className="top-action" type="button" onClick={() => setPoliciesOpen(true)}>
-              <BookOpen size={16} />
-              <span>Políticas</span>
-            </button>
-            <button
-              className="top-action"
-              type="button"
-              onClick={clearCurrentConversation}
-              disabled={pending || !activeConversation?.messages.length}
-            >
-              <RefreshCw size={16} />
-              <span>Reiniciar</span>
-            </button>
+          <div className="area-chips">
+            {areaEntries.map((entry) => (
+              <div
+                key={entry.short}
+                className={`area-chip ${entry.tone} ${currentArea && areaMeta(currentArea).short === entry.short ? "area-chip--active" : ""}`}
+              >
+                {entry.short}
+              </div>
+            ))}
           </div>
+          <button
+            className="top-action"
+            type="button"
+            onClick={clearCurrentConversation}
+            disabled={pending || !activeConversation?.messages.length}
+          >
+            <RefreshCw size={15} />
+            <span>Reiniciar</span>
+          </button>
         </header>
 
-        <section className="chat-scroll" ref={scrollRef}>
-          <div className="chat-inner">
+        <section className="feed" ref={scrollRef}>
+          <div className="feed-inner">
             {!activeConversation?.messages.length ? (
-              <Hero onSuggestion={sendMessage} />
+              <WelcomeCard onSuggestion={sendMessage} />
             ) : (
-              <div className="message-list">
-                <AnimatePresence initial={false}>
-                  {activeConversation.messages.map((message) => (
-                    <Message
-                      message={message}
-                      key={message.id}
-                      onOpenTicket={setTicketDraft}
-                    />
-                  ))}
-                  {pendingConversationId === activeConversation.id && <ThinkingMessage key="thinking" />}
-                </AnimatePresence>
-              </div>
+              <AnimatePresence initial={false}>
+                {activeConversation.messages.map((message) => (
+                  <Message message={message} key={message.id} onOpenTicket={setTicketDraft} />
+                ))}
+                {pendingConversationId === activeConversation.id && <ThinkingMessage key="thinking" />}
+              </AnimatePresence>
             )}
           </div>
         </section>
@@ -801,7 +863,7 @@ export default function App() {
               value={input}
               onChange={(event) => setInput(event.target.value.slice(0, 1800))}
               onKeyDown={handleKeyDown}
-              placeholder="¿Qué necesitas resolver hoy?"
+              placeholder="Escribe tu siguiente pregunta…"
               rows={1}
               disabled={pending}
               aria-label="Mensaje"
@@ -813,15 +875,38 @@ export default function App() {
               disabled={pending || !input.trim()}
               aria-label="Enviar consulta"
             >
-              <Send size={18} />
+              <Send size={17} />
             </button>
           </div>
           <div className="composer-meta">
-            <span><ShieldCheck size={13} /> Respuestas verificadas con documentos internos</span>
-            <span>Enter para enviar · Shift + Enter para una línea nueva</span>
+            <span><ShieldCheck size={12} /> Respuestas verificadas con documentos internos</span>
           </div>
         </footer>
       </main>
+
+      <ContextPanel
+        open={contextOpen}
+        onClose={() => setContextOpen(false)}
+        area={currentArea}
+        relatedPolicies={relatedPolicies}
+        metrics={metrics}
+        onOpenMetrics={() => setShowMetrics(true)}
+        apiStatus={apiStatus}
+      />
+
+      <HistoryPanel
+        open={historyOpen}
+        onClose={() => setHistoryOpen(false)}
+        conversations={conversations}
+        activeId={activeId}
+        pendingId={pendingConversationId}
+        onSelect={(id) => {
+          setActiveId(id);
+          setHistoryOpen(false);
+        }}
+        onDelete={deleteConversation}
+        onNew={startNewConversation}
+      />
 
       <PoliciesPanel
         open={policiesOpen}
