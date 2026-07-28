@@ -170,7 +170,7 @@ Backend/
 ├── Dockerfile
 ├── .env.example
 ├── Documentos/
-├── faiss_indexv2/          (generado, no se versiona)
+├── faiss_indexv2/
 └── frontend/
     ├── src/
     │   ├── App.jsx
@@ -204,7 +204,7 @@ contenido cuando la aplicación se ejecuta con `python Main.py`.
 | `vectorstore.py` | Carga, valida o reconstruye el índice FAISS. |
 | `tickets.py` | Valida el formulario, genera un código de referencia y envía el correo. |
 | `Documentos/` | Contiene las políticas corporativas en PDF. |
-| `faiss_indexv2/` | Índice vectorial generado localmente; no se versiona (ver `.gitignore`). |
+| `faiss_indexv2/` | Contiene el índice vectorial y su manifiesto de validación. Se versiona a propósito: así el despliegue solo lo carga en vez de reconstruirlo (ver sección de Render). |
 | `frontend/src/App.jsx` | Contiene el chat y consume `/api/chat`. |
 | `frontend/src/TicketPage.jsx` | Contiene el formulario y consume `/api/tickets`. |
 | `frontend/src/MetricsPage.jsx` | Panel de uso interno; consume `/api/metricas`. |
@@ -645,6 +645,22 @@ proveedor y sirve el frontend y la API desde el mismo dominio.
 > planes gratuitos. En ese caso el chat puede funcionar, pero el envío de
 > tickets por Gmail SMTP no. Para habilitarlo en producción se necesita una
 > instancia compatible o un servicio de correo mediante API HTTPS.
+
+> **Construye el índice FAISS localmente antes de desplegar, no en el
+> servidor.** Si cambias los documentos y `faiss_indexv2/` no coincide con
+> ellos, la aplicación lo reconstruye automáticamente al arrancar, lo cual
+> carga la librería `transformers` y puede superar los 512 MB de RAM de un
+> plan gratuito (Render Free, por ejemplo), provocando un `Out of memory` en
+> el despliegue. Para evitarlo:
+>
+> 1. Ejecuta `python Main.py` en tu máquina local después de cambiar los
+>    documentos, para que reconstruya `faiss_indexv2/` ahí (con tu RAM, sin
+>    límite de 512 MB).
+> 2. Confirma que se generaron `faiss_indexv2/index.faiss`,
+>    `faiss_indexv2/index.pkl` e `faiss_indexv2/indice_manifest.json`.
+> 3. Haz commit y push de esos archivos junto con el resto de tus cambios.
+> 4. Recién entonces despliega: el servidor solo cargará el índice ya
+>    construido, sin reconstruirlo, con un consumo de memoria mucho menor.
 
 ## ⚠️ Consideraciones actuales
 
