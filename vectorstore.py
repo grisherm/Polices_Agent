@@ -5,6 +5,7 @@ import hashlib
 import json
 import shutil
 import time
+import unicodedata
 from pathlib import Path
 from typing import List
 
@@ -148,20 +149,32 @@ def sub_vectorstore_huella_archivos(pdf_dir: Path) -> str:
     Calcula un hash SHA-256 basado en los archivos PDF de la carpeta y los embeddings activos.
     Se excluye la fecha de modificación (mtime) porque Git no la preserva al clonar en la nube (Render).
     Solo usamos el nombre del archivo y su tamaño en bytes.
+
+    Los nombres se normalizan a Unicode NFC antes de usarlos: macOS entrega los
+    nombres de archivo con tildes en forma NFD (letra + acento combinado),
+    mientras que Linux (y Git) los entrega en forma NFC (un solo carácter).
+    Sin esta normalización, un índice construido en macOS nunca coincide con
+    la huella calculada en un servidor Linux, y la app lo reconstruye
+    innecesariamente en cada arranque.
     """
     hasher = hashlib.sha256()
     hasher.update(sub_vectorstore_identidad_embeddings().encode("utf-8"))
 
     if pdf_dir.exists():
-        for archivo in sorted(pdf_dir.glob("*.pdf")):
+        archivos = []
+        for archivo in pdf_dir.glob("*.pdf"):
+            nombre_nfc = unicodedata.normalize("NFC", archivo.name)
+            archivos.append((nombre_nfc, archivo))
+
+        for nombre_nfc, archivo in sorted(archivos, key=lambda item: item[0]):
             try:
                 stat = archivo.stat()
-                hasher.update(archivo.name.encode("utf-8", errors="ignore"))
+                hasher.update(nombre_nfc.encode("utf-8", errors="ignore"))
                 hasher.update(b"\0")
                 hasher.update(str(stat.st_size).encode("utf-8"))
                 hasher.update(b"\0")
             except OSError:
-                hasher.update(archivo.name.encode("utf-8", errors="ignore"))
+                hasher.update(nombre_nfc.encode("utf-8", errors="ignore"))
 
     return hasher.hexdigest()
 
