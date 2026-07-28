@@ -12,9 +12,13 @@ env/
 
 
 
-# Índices y artefactos generados por el RAG
+# Índice antiguo (ya no se usa; se mantiene el nombre por compatibilidad)
 faiss_index/
-faiss_indexv2/
+
+# faiss_indexv2/ SÍ se versiona a propósito: se construye localmente y se
+# commitea para que el despliegue (ej. Render free tier) solo tenga que
+# cargarlo, no reconstruirlo. Reconstruirlo en el servidor carga la
+# librería transformers y excede los 512 MB de RAM del plan gratuito.
 
 
 # Resultados temporales de ejecución
