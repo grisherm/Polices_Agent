@@ -33,7 +33,7 @@ if LLM_PROVIDER not in {"cohere", "gemini"}:
 EMBEDDINGS_PROVIDER = os.getenv("EMBEDDINGS_PROVIDER", "cohere").strip().lower()
 
 COHERE_EMBEDDING_MODEL = os.getenv("COHERE_EMBEDDING_MODEL", "embed-v4.0").strip()
-GEMINI_EMBEDDING_MODEL = os.getenv("GEMINI_EMBEDDING_MODEL", "models/gemini-embedding-exp-03-07").strip()
+GEMINI_EMBEDDING_MODEL = os.getenv("GEMINI_EMBEDDING_MODEL", "models/gemini-embedding-001").strip()
 
 if EMBEDDINGS_PROVIDER == "cohere" and not COHERE_API_KEY:
     raise RuntimeError("Falta COHERE_API_KEY en el .env para los embeddings.")
