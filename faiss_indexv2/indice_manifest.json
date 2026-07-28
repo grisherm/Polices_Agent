@@ -1,0 +1,5 @@
+{
+  "huella": "40127fd7b58ed8428f786b94e81a4fbb02031ddb2b1a11756964de13baadd1f5",
+  "cantidad_chunks": 18,
+  "embeddings": "gemini:models/gemini-embedding-001"
+}
