@@ -44,7 +44,7 @@ state = {}
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Carga e inicializa todos los componentes del agente al arrancar el servidor."""
-    print("Iniciando componentes del agente de IA y RAG de Alicorp...")
+    print("Iniciando componentes del agente de IA y RAG de Nexus Logistics & Tech...")
     try:
         llm = construir_llm()
         modelo_embeddings = construir_embeddings()
@@ -91,8 +91,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Alicorp RAG Agent API",
-    description="API REST para interactuar con el Agente de Políticas Corporativas de Alicorp.",
+    title="Nexus Logistics & Tech RAG Agent API",
+    description="API REST para interactuar con el Agente de Políticas Corporativas de Nexus Logistics & Tech.",
     version="2.0.0",
     lifespan=lifespan,
 )

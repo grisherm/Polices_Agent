@@ -1,47 +1,25 @@
-# 🤖 Agente de Políticas Corporativas de Alicorp
+# 🤖 Agente de Políticas Corporativas de Nexus Logistics & Tech
 
 Aplicación web con inteligencia artificial que responde consultas sobre las
-políticas corporativas de Alicorp. El sistema clasifica cada mensaje, busca
-información en documentos PDF mediante RAG, verifica la respuesta y muestra las
-fuentes utilizadas.
+políticas internas de Nexus Logistics & Tech. El sistema clasifica cada
+mensaje, busca información en documentos PDF mediante RAG, verifica la
+respuesta y muestra las fuentes utilizadas.
 
 Cuando una solicitud necesita una gestión real, el agente no envía el ticket
 automáticamente. Primero muestra un formulario para que el usuario revise y
 complete la información. El correo se envía únicamente después de confirmar el
 formulario.
 
-## 🔗 Enlaces de entrega del Challenge
+## 🧾 Origen y adaptación del proyecto
 
-- **Código fuente — rama oficial de entrega:**
-  [Api-Agente](https://github.com/CORREAK18/AgenteIA_Alicorp_Politicas/tree/Api-Agente)
-- **Aplicación desplegada en Render:**
-  [https://agente-alicorp.onrender.com](https://agente-alicorp.onrender.com)
-
-> **Rama oficial del Challenge:** `Api-Agente` contiene la aplicación completa
-> y es la rama conectada actualmente al despliegue de Render. Por ese motivo,
-> esta es la rama cuyo enlace se presenta como entrega del proyecto. La rama
-> `main` conserva una copia completa y consolidada de la misma solución.
-
-> Si el servicio se encuentra inactivo, la primera carga puede tardar mientras
-> Render lo inicia nuevamente.
-
-## 🌿 Ramas del repositorio
-
-El repositorio conserva la rama oficial de entrega, una copia consolidada y el
-prototipo inicial.
-
-| Rama | Contenido |
-| --- | --- |
-| `Api-Agente` | Rama oficial de entrega del Challenge. Contiene la versión completa, está conectada a Render e incluye FastAPI, React, LangGraph, RAG, memoria, verificación, tickets, Docker y pruebas. |
-| `main` | Copia completa y consolidada de la solución. Conserva el mismo proyecto, pero no es la rama utilizada actualmente por el despliegue de Render. |
-| `prototipo` | Versión inicial del agente, conservada para mostrar la evolución del proyecto. |
-
-Las ramas `main` y `Api-Agente` contienen la aplicación web completa. Para la
-entrega del Challenge se utiliza `Api-Agente` porque es la rama desde la que
-Render construye y publica actualmente la aplicación.
-
-> **Enlace que debe presentarse para revisar el código del Challenge:**
-> [https://github.com/CORREAK18/AgenteIA_Alicorp_Politicas/tree/Api-Agente](https://github.com/CORREAK18/AgenteIA_Alicorp_Politicas/tree/Api-Agente)
+Este proyecto parte de una base técnica existente (agente RAG con FastAPI,
+LangGraph, FAISS y React) desarrollada originalmente para otra organización.
+A partir de esa base se adaptó a un dominio y una empresa distintos —
+**Nexus Logistics & Tech**, una empresa ficticia de logística y tecnología —
+reemplazando por completo el corpus documental, los prompts del agente, la
+identidad visual y los ejemplos de clasificación, y ajustando partes del
+código según las necesidades del nuevo dominio (más detalle en las secciones
+siguientes).
 
 ## ✨ Funcionalidades principales
 
@@ -312,31 +290,19 @@ Si aparece `python no se reconoce`, Python no se agregó al `PATH`. Se debe
 reabrir el instalador, activar **Add Python to PATH** y abrir PowerShell
 nuevamente.
 
-### Paso 2. Descargar la rama oficial del Challenge
-
-La rama que debe utilizarse para revisar, ejecutar o evaluar la entrega es
-`Api-Agente`, porque contiene la aplicación completa y está conectada al
-despliegue de Render:
+### Paso 2. Descargar el repositorio
 
 ```powershell
-git clone --branch Api-Agente --single-branch https://github.com/CORREAK18/AgenteIA_Alicorp_Politicas.git
-cd AgenteIA_Alicorp_Politicas
-git branch --show-current
+git clone https://github.com/grisherm/Polices_Agent.git
+cd Polices_Agent
 ```
-
-El último comando debe mostrar `Api-Agente`. La rama `main` también conserva
-una copia completa del proyecto, pero no es la fuente del despliegue actual.
 
 Sin Git:
 
-1. Abrir el
-   [repositorio en GitHub](https://github.com/CORREAK18/AgenteIA_Alicorp_Politicas).
-2. Seleccionar la rama
-   [Api-Agente](https://github.com/CORREAK18/AgenteIA_Alicorp_Politicas/tree/Api-Agente),
-   que corresponde a la entrega y al despliegue de Render.
-3. Presionar **Code** y después **Download ZIP**.
-4. Descomprimir el ZIP.
-5. Abrir la carpeta extraída y seleccionar **Abrir en Terminal**.
+1. Abrir el [repositorio en GitHub](https://github.com/grisherm/Polices_Agent).
+2. Presionar **Code** y después **Download ZIP**.
+3. Descomprimir el ZIP.
+4. Abrir la carpeta extraída y seleccionar **Abrir en Terminal**.
 
 ### Paso 3. Verificar la carpeta del proyecto
 
@@ -616,9 +582,9 @@ ya instaló Python y siguió la sección anterior, solamente debe usar:
 python Main.py
 ```
 
-El `Dockerfile` se conserva porque Render lo utiliza para construir y desplegar
-la aplicación. También permite ejecutar el proyecto en un contenedor, pero es
-una alternativa.
+El `Dockerfile` permite ejecutar el proyecto en un contenedor como alternativa
+a la instalación local, y sirve como base para un eventual despliegue en un
+proveedor cloud (Render, Railway, etc.).
 
 Si un usuario decide utilizar Docker en Windows:
 
@@ -635,13 +601,13 @@ Si un usuario decide utilizar Docker en Windows:
 5. Desde la carpeta donde está `Dockerfile`, construir la imagen:
 
    ```powershell
-   docker build -t agente-alicorp .
+   docker build -t agente-nexus .
    ```
 
 6. Cuando la construcción termine, iniciar el contenedor:
 
    ```powershell
-   docker run --rm --name agente-alicorp --env-file .env -p 8000:8000 agente-alicorp
+   docker run --rm --name agente-nexus --env-file .env -p 8000:8000 agente-nexus
    ```
 
 7. Abrir `http://localhost:8000`.
@@ -659,30 +625,18 @@ Errores básicos:
 | No encuentra `.env` | Crear `.env` desde `.env.example` en la raíz del proyecto. |
 | El puerto 8000 está ocupado | Usar `-p 8080:8000` y abrir `http://localhost:8080`. |
 
-## ☁️ Despliegue en Render
+## ☁️ Despliegue en la nube (opcional)
 
-La rama `Api-Agente` contiene la versión completa y es la fuente actualmente
-conectada al servicio de Render. La rama `main` contiene la misma aplicación
-consolidada, pero los despliegues automáticos se generan desde `Api-Agente`.
-Render instala las dependencias, compila React y ejecuta `python Main.py`.
+El proyecto no tiene actualmente un despliegue activo público. El `Dockerfile`
+y `railway.toml` incluidos permiten desplegarlo en un proveedor cloud (Render,
+Railway u otro) que instale las dependencias, compile React y ejecute
+`python Main.py`. La aplicación lee la variable `PORT` provista por el
+proveedor y sirve el frontend y la API desde el mismo dominio.
 
-La aplicación utiliza la variable `PORT` proporcionada por Render y sirve el
-frontend y la API desde el mismo dominio.
-
-Comprobación del servicio:
-
-**https://agente-alicorp.onrender.com/health**
-
-> Render bloquea los puertos SMTP `25`, `465` y `587` en los servicios web
-> gratuitos. En ese tipo de instancia el chat puede funcionar, pero el envío
-> por Gmail SMTP no. Para habilitarlo en producción se necesita una instancia
-> compatible o un servicio de correo mediante API HTTPS. Consulta las
-> [limitaciones oficiales del plan gratuito](https://render.com/docs/free#outbound-traffic).
-
-
-## Evidencia
-
-![Prueba de despliegue](./prueba-despliegue.png)
+> Algunos proveedores bloquean los puertos SMTP `25`, `465` y `587` en sus
+> planes gratuitos. En ese caso el chat puede funcionar, pero el envío de
+> tickets por Gmail SMTP no. Para habilitarlo en producción se necesita una
+> instancia compatible o un servicio de correo mediante API HTTPS.
 
 ## ⚠️ Consideraciones actuales
 

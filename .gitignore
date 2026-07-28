@@ -14,6 +14,7 @@ env/
 
 # Índices y artefactos generados por el RAG
 faiss_index/
+faiss_indexv2/
 
 
 # Resultados temporales de ejecución

@@ -41,7 +41,7 @@ def validar_ticket(ticket: TicketRequest):
 def crear_codigo_ticket() -> str:
     fecha = datetime.now(timezone.utc).strftime("%Y%m%d")
     codigo = uuid4().hex[:8].upper()
-    return f"ALC-{fecha}-{codigo}"
+    return f"NEX-{fecha}-{codigo}"
 
 
 def enviar_ticket_por_correo(ticket: TicketRequest) -> TicketResponse:
@@ -53,7 +53,7 @@ def enviar_ticket_por_correo(ticket: TicketRequest) -> TicketResponse:
     ticket_id = crear_codigo_ticket()
 
     contenido = f"""
-NUEVO TICKET DE ALICORP IA
+NUEVO TICKET DE NEXUS LOGISTICS & TECH IA
 
 Código: {ticket_id}
 Categoría: {ticket.categoria}
@@ -74,7 +74,7 @@ DETALLE DEL TICKET
 
     categoria = ticket.categoria.replace("\n", " ")[:80]
     mensaje = EmailMessage()
-    mensaje["From"] = f"Alicorp IA Tickets <{config.SMTP_USER}>"
+    mensaje["From"] = f"Nexus Logistics & Tech IA Tickets <{config.SMTP_USER}>"
     mensaje["To"] = config.TICKET_DESTINO
     mensaje["Subject"] = f"[{ticket.urgencia}] {ticket_id} - {categoria}"
 

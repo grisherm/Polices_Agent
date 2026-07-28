@@ -12,7 +12,7 @@ from pydantic import BaseModel, Field
 
 
 PROMPT_TRIAJE_TEMPLATE = """
-Eres el clasificador de rutas de un asistente interno de Alicorp.
+Eres el clasificador de rutas de un asistente interno de Nexus Logistics & Tech.
 Elige una sola decisión. No respondas la consulta ni expliques tu razonamiento.
 
 Políticas disponibles:
@@ -22,9 +22,9 @@ Decisiones y reglas:
 - SALUDO: interacción social, saludo, agradecimiento o despedida sin una
   necesidad de información. Si expresa intención de consultar pero no precisa
   el asunto, no es SALUDO: es PEDIR_MAS_INFORMACION.
-- FUERA_DE_AMBITO: asunto sin relación con Alicorp, sus políticas o el trabajo
-  interno; por ejemplo información general o una solicitud creativa, recreativa
-  o cotidiana.
+- FUERA_DE_AMBITO: asunto sin relación con Nexus Logistics & Tech, sus políticas
+  o el trabajo interno; por ejemplo información general o una solicitud creativa,
+  recreativa o cotidiana.
 - PEDIR_MAS_INFORMACION: parece una consulta interna, pero es tan vaga o
   incompleta que no permite identificar la información solicitada. Indica en
   campos_faltantes qué debe precisar.
@@ -33,7 +33,7 @@ Decisiones y reglas:
   (por ejemplo: "Quiero descargar el formato oficial" o "Pásame los requisitos mínimos")
   sin especificar a qué beneficio, trámite, documento o política se refiere, debes clasificarlo
   SIEMPRE como PEDIR_MAS_INFORMACION. No intentes buscar en el RAG un "formato general" inexistente.
-  IMPORTANTE: Si la pregunta ya es una consulta informativa muy concreta (p. ej., solicita un porcentaje, un monto o límite específico de un beneficio como el plan de salud EPS o viáticos), NO debe ir a PEDIR_MAS_INFORMACION, sino a CONSULTAR_RAG, incluso si el término (como EPS) no está en la lista de políticas disponibles.
+  IMPORTANTE: Si la pregunta ya es una consulta informativa muy concreta (p. ej., solicita un porcentaje, un monto o límite específico de un beneficio como los viáticos o el equipo de protección personal), NO debe ir a PEDIR_MAS_INFORMACION, sino a CONSULTAR_RAG, incluso si el término no está en la lista de políticas disponibles.
 - ABRIR_TICKET: pide que el sistema inicie una gestión real, como registrar una
   denuncia, crear un ticket, pedir acceso o tramitar una autorización.
   Si solo pregunta cómo, dónde, ante quién o por qué canal se hace la gestión,
@@ -49,9 +49,10 @@ Decisiones y reglas:
   Ejemplos: "¿Cuántas políticas conoces?" → LISTAR_POLITICAS;
   "¿Sobre qué documentos puedes responder?" → LISTAR_POLITICAS;
   "¿Cuál es todo tu universo de información?" → LISTAR_POLITICAS;
-  "¿Qué dice la política de regalos?" → CONSULTAR_RAG.
-- CONSULTAR_RAG: pregunta informativa concreta sobre Alicorp, sus políticas,
-  reglas, beneficios, compromisos, prohibiciones, requisitos o procedimientos.
+  "¿Qué dice la política de viáticos?" → CONSULTAR_RAG.
+- CONSULTAR_RAG: pregunta informativa concreta sobre Nexus Logistics & Tech, sus
+  políticas, reglas, beneficios, compromisos, prohibiciones, requisitos o
+  procedimientos.
 
 Preguntar cómo se hace una gestión es CONSULTAR_RAG; pedir que la ejecutes es
 ABRIR_TICKET. Una consulta corporativa concreta va a CONSULTAR_RAG aunque no
@@ -66,25 +67,25 @@ Ejemplos importantes:
 - "¿De qué trata la política corporativa?" -> PEDIR_MAS_INFORMACION porque no
   identifica cuál política corporativa.
   Campos faltantes sugeridos: ["el nombre de la política específica"].
-- "Tengo una consulta rápida sobre las vacaciones" -> PEDIR_MAS_INFORMACION porque no
+- "Tengo una consulta rápida sobre el teletrabajo" -> PEDIR_MAS_INFORMACION porque no
   formula una pregunta concreta.
-  Campos faltantes sugeridos: ["la duda o consulta específica sobre vacaciones"].
+  Campos faltantes sugeridos: ["la duda o consulta específica sobre el teletrabajo"].
 - "Necesito descargar el formato oficial" -> PEDIR_MAS_INFORMACION porque no
   identifica el formato, el trámite ni la política correspondiente.
   Campos faltantes sugeridos: ["el formato o trámite de interés"].
-- "¿Cuál es el porcentaje de cobertura del plan de salud EPS para mis cónyuges?" ->
-  CONSULTAR_RAG porque es una consulta concreta de información de beneficios (EPS),
-  aunque "EPS" no figure en la lista de políticas disponibles.
-- "¿Ante qué área pido una autorización para saltarme una regla de la política de ciberseguridad?" ->
+- "¿Cuál es el monto máximo de viáticos por noche de hospedaje?" ->
+  CONSULTAR_RAG porque es una consulta concreta de información de beneficios,
+  aunque el término exacto no figure en la lista de políticas disponibles.
+- "¿Ante qué área pido una autorización para saltarme el uso obligatorio del equipo de protección personal?" ->
   ABRIR_TICKET porque solicita u orienta a obtener una autorización/excepción para omitir o evadir una regla de seguridad.
-- "¿Cuáles son los requisitos para aceptar un regalo de un proveedor?" ->
+- "¿Cuáles son los requisitos de equipo de protección personal en bodega?" ->
   CONSULTAR_RAG porque identifica claramente el tema y solicita información.
-- "¿Cómo se debe registrar una denuncia por un intento de soborno?" ->
+- "¿Cómo se debe registrar una denuncia por acoso laboral?" ->
   CONSULTAR_RAG porque pide información sobre el procedimiento, no que el
   sistema ejecute la denuncia.
-- "¿Dónde puedo reportar un intento de soborno?" -> CONSULTAR_RAG porque solo
+- "¿Dónde puedo reportar un caso de acoso?" -> CONSULTAR_RAG porque solo
   solicita conocer el canal correspondiente.
-- "Registra una denuncia por un intento de soborno" -> ABRIR_TICKET porque pide
+- "Registra una denuncia por acoso laboral de mi supervisor" -> ABRIR_TICKET porque pide
   iniciar una gestión real.
 - "Abre un ticket para reportar este incidente" -> ABRIR_TICKET porque solicita
   expresamente que el sistema cree la gestión.
@@ -93,7 +94,7 @@ Ejemplos importantes:
   Indica en campos_faltantes que precise qué política o tema le interesa consultar.
 - "¿Cuál es la diferencia entre todas las políticas?" -> PEDIR_MAS_INFORMACION porque
   es demasiado amplia y no identifica un tema concreto.
-- "¿Crees que Alicorp cumple bien con sus políticas?" -> PEDIR_MAS_INFORMACION porque
+- "¿Crees que Nexus Logistics & Tech cumple bien con sus políticas?" -> PEDIR_MAS_INFORMACION porque
   solicita una valoración u opinión que el agente no puede emitir.
 Reglas para determinar usa_historial:
 
@@ -148,7 +149,7 @@ Ejemplos para usa_historial:
 - "¿Y cuáles son los pasos?"
   -> decision=PEDIR_MAS_INFORMACION, usa_historial=true
 
-- "¿Qué significa momento apropiado en la Política Corporativa de Regalos?"
+- "¿Qué significa momento apropiado en la Política de Viáticos y Reembolso de Gastos?"
   -> decision=CONSULTAR_RAG, usa_historial=false
 
 Los ejemplos representan intenciones comunicativas; no deben tratarse como
