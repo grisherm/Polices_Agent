@@ -1,4 +1,4 @@
-# Suite de pruebas del agente Alicorp con control de carga.
+# Suite de pruebas del agente Nexus Logistics & Tech con control de carga.
 # Ejecuta los casos de forma secuencial contra /api/chat para validar la acción
 # y conservar la respuesta completa que recibiría el usuario.
 # Incluye pausas y descansos entre solicitudes.
@@ -50,48 +50,48 @@ CASOS_DE_PRUEBA = [
     # PEDIR MÁS INFORMACIÓN
     {"pregunta": "Quiero ver los requisitos mínimos",                     "esperado": "PEDIR_INFO", "categoria": "Triaje -> Pedir Información", "grupo": "triaje"},
     {"pregunta": "¿De qué trata la política corporativa?",                "esperado": "PEDIR_INFO", "categoria": "Triaje -> Pedir Información", "grupo": "triaje"},
-    {"pregunta": "Tengo una consulta rápida sobre las vacaciones",        "esperado": "PEDIR_INFO", "categoria": "Triaje -> Pedir Información", "grupo": "triaje"},
+    {"pregunta": "Tengo una consulta rápida sobre el teletrabajo",        "esperado": "PEDIR_INFO", "categoria": "Triaje -> Pedir Información", "grupo": "triaje"},
     {"pregunta": "Necesito descargar el formato oficial",                  "esperado": "PEDIR_INFO", "categoria": "Triaje -> Pedir Información", "grupo": "triaje"},
     {"pregunta": "¿Me podrías detallar el procedimiento administrativo?", "esperado": "PEDIR_INFO", "categoria": "Triaje -> Pedir Información", "grupo": "triaje"},
 
     # ABRIR TICKET
-    {"pregunta": "Necesito una excepción para contratar a mi hermano en mi mismo departamento",                           "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
-    {"pregunta": "Quiero reportar un caso grave de fraude y desvío de fondos que descubrí",                               "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
-    {"pregunta": "Solicito una autorización especial para aceptar un regalo de $600 de un proveedor clave",               "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
-    {"pregunta": "Quiero denunciar acoso laboral y malos tratos por parte de mi gerente de área",                         "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
-    {"pregunta": "Por favor, libérenme un acceso especial permanente al servidor principal de base de datos de producción","esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
+    {"pregunta": "Registra una denuncia por acoso laboral de mi supervisor",                                               "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
+    {"pregunta": "Quiero reportar que un compañero operó el montacargas después de haber bebido alcohol",                 "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
+    {"pregunta": "Necesito que me liberen con urgencia un acceso especial permanente al servidor de producción",           "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
+    {"pregunta": "Quiero abrir un ticket para reportar un accidente laboral que ocurrió en la bodega",                     "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
+    {"pregunta": "Necesito solicitar la aprobación de un viático extraordinario no contemplado para mi próximo viaje",     "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
 
     # RAG EXITOSO
-    {"pregunta": "¿Cuáles son los compromisos éticos de Alicorp según su guía?",                                    "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
-    {"pregunta": "¿Qué es un regalo o atención según la política corporativa de regalos?",                          "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
-    {"pregunta": "¿Puedo recibir dinero en efectivo de un proveedor como obsequio corporativo?",                    "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
-    {"pregunta": "¿Cómo define Alicorp el concepto de fraude en su política corporativa?",                          "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
-    {"pregunta": "¿Cuál es el compromiso de Alicorp frente a la defensa de los derechos humanos?",                  "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
-    {"pregunta": "¿Qué medidas y pautas de seguridad de la información debemos seguir?",                            "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
-    {"pregunta": "¿Cómo define Alicorp los lineamientos de su marketing responsable?",                              "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
-    {"pregunta": "¿A quiénes aplican las restricciones en la política de sanciones económicas de Alicorp?",         "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
-    {"pregunta": "¿Qué debemos hacer en caso de detectar o sospechar un conflicto de interés?",                     "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
-    {"pregunta": "¿Qué principios establece la política para proteger la información de clientes y colaboradores?", "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
+    {"pregunta": "¿Cuáles son los principios rectores del Código de Ética y Conducta de Nexus Logistics & Tech?",                 "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
+    {"pregunta": "¿Cuál es el monto máximo reembolsable por noche de hospedaje en un viaje de trabajo nacional?",                 "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
+    {"pregunta": "¿Cuántos días presenciales mínimos exige el esquema estándar de trabajo híbrido?",                              "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
+    {"pregunta": "¿Qué equipo de protección personal es obligatorio en las áreas de bodega?",                                     "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
+    {"pregunta": "¿Qué nivel de alcoholemia se permite a los conductores de transporte y operadores de maquinaria pesada?",       "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
+    {"pregunta": "¿Cada cuántos días se debe renovar la contraseña de acceso a los sistemas internos?",                           "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
+    {"pregunta": "¿Cuánto tiempo se mantiene vigente la obligación de confidencialidad después de terminar la relación laboral?", "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
+    {"pregunta": "¿Cuál es el límite máximo de manejo manual de carga individual para hombres en bodega?",                        "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
+    {"pregunta": "¿Cuántos intentos fallidos de inicio de sesión bloquean automáticamente una cuenta?",                           "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
+    {"pregunta": "¿Qué plazo tiene un colaborador para presentar sus facturas y comprobantes después de un viaje?",               "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Triaje -> RAG -> Verificador -> Exitoso", "grupo": "rag"},
 
     # RAG SIN INFORMACIÓN
-    {"pregunta": "¿Cuál es el monto máximo permitido para los viáticos de viaje de trabajo nacional?",  "esperado": "SIN_INFORMACION", "tipo_respuesta": "no_se", "categoria": "Triaje -> RAG -> Verificador -> No sé", "grupo": "rag"},
     {"pregunta": "¿Cuántos días hábiles de licencia por mudanza me corresponden por ley en la empresa?","esperado": "SIN_INFORMACION", "tipo_respuesta": "no_se", "categoria": "Triaje -> RAG -> Verificador -> No sé", "grupo": "rag"},
     {"pregunta": "¿Cómo puedo realizar la solicitud para el préstamo corporativo de vivienda?",          "esperado": "SIN_INFORMACION", "tipo_respuesta": "no_se", "categoria": "Triaje -> RAG -> Verificador -> No sé", "grupo": "rag"},
-    {"pregunta": "¿Cuál es el porcentaje de cobertura del plan de salud EPS para mis cónyuges?",        "esperado": "SIN_INFORMACION", "tipo_respuesta": "no_se", "categoria": "Triaje -> RAG -> Verificador -> No sé", "grupo": "rag"},
-    {"pregunta": "¿Cómo puedo pedir el reembolso por estudios de maestría o diplomado externo?",        "esperado": "SIN_INFORMACION", "tipo_respuesta": "no_se", "categoria": "Triaje -> RAG -> Verificador -> No sé", "grupo": "rag"},
+    {"pregunta": "¿Cuál es el porcentaje de cobertura del plan de salud EPS para mis dependientes?",     "esperado": "SIN_INFORMACION", "tipo_respuesta": "no_se", "categoria": "Triaje -> RAG -> Verificador -> No sé", "grupo": "rag"},
+    {"pregunta": "¿Cómo puedo pedir el reembolso por estudios de maestría o diplomado externo?",         "esperado": "SIN_INFORMACION", "tipo_respuesta": "no_se", "categoria": "Triaje -> RAG -> Verificador -> No sé", "grupo": "rag"},
+    {"pregunta": "¿Cuál es la política de bonos por desempeño anual para el personal administrativo?",   "esperado": "SIN_INFORMACION", "tipo_respuesta": "no_se", "categoria": "Triaje -> RAG -> Verificador -> No sé", "grupo": "rag"},
 
     # TICKETS DIRECTOS DESDE TRIAJE
-    {"pregunta": "¿Puedo solicitar una excepción para recibir un regalo de un proveedor que excede los montos?",           "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
-    {"pregunta": "Quiero solicitar la aprobación de un viático extraordinario no contemplado en el viaje",                 "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
-    {"pregunta": "Necesito pedir la liberación y desbloqueo de mi laptop personal bloqueada por seguridad de la información","esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
-    {"pregunta": "¿Ante qué área pido una autorización para saltarme una regla de la política de ciberseguridad?",         "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
-    {"pregunta": "Quiero abrir un ticket de soporte técnico para el canal de denuncias de ética",                          "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
+    {"pregunta": "¿Ante qué área pido una autorización para saltarme el uso obligatorio del equipo de protección personal?", "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
+    {"pregunta": "Quiero solicitar la aprobación de un anticipo de viáticos mayor al 80% permitido",                        "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
+    {"pregunta": "Necesito pedir el desbloqueo de mi cuenta, quedó bloqueada por intentos fallidos de acceso",              "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
+    {"pregunta": "Quiero registrar una denuncia por hostigamiento de un proveedor hacia una compañera",                     "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
+    {"pregunta": "Necesito reportar que perdí mi laptop corporativa con acceso a la plataforma logística",                  "esperado": "ABRIR_TICKET", "categoria": "Triaje -> Abrir Ticket", "grupo": "triaje"},
 
     # PRUEBAS DE MEMORIA DE CORTO PLAZO
-    {"pregunta": "¿Cuál es el límite permitido para recibir un regalo de un proveedor?", "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Memoria -> Sesión Regalos -> Turno 1", "grupo": "rag", "sesion": "regalos"},
-    {"pregunta": "¿Y si se trata de dinero en efectivo?",                                "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Memoria -> Sesión Regalos -> Turno 2", "grupo": "rag", "sesion": "regalos"},
-    {"pregunta": "¿Qué operaciones prohíbe la política de sanciones económicas de Alicorp?", "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Memoria -> Sesión Sanciones -> Turno 1", "grupo": "rag", "sesion": "sanciones"},
-    {"pregunta": "¿Existen excepciones para estas prohibiciones?",                       "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Memoria -> Sesión Sanciones -> Turno 2", "grupo": "rag", "sesion": "sanciones"},
+    {"pregunta": "¿Cuál es el monto máximo reembolsable por noche de hospedaje?",         "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Memoria -> Sesión Viáticos -> Turno 1", "grupo": "rag", "sesion": "viaticos"},
+    {"pregunta": "¿Y el gasto de movilidad local tiene el mismo límite fijo?",             "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Memoria -> Sesión Viáticos -> Turno 2", "grupo": "rag", "sesion": "viaticos"},
+    {"pregunta": "¿Qué equipo de protección personal es obligatorio en bodega?",           "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Memoria -> Sesión EPP -> Turno 1", "grupo": "rag", "sesion": "epp"},
+    {"pregunta": "¿Y quienes operan montacargas en altura necesitan algo adicional?",      "esperado": "AUTO_RESOLVER", "tipo_respuesta": "rag_exitoso", "categoria": "Memoria -> Sesión EPP -> Turno 2", "grupo": "rag", "sesion": "epp"},
 ]
 
 
@@ -240,7 +240,7 @@ def escribir_reporte_md(exitosos: int, fallidos: int, detalles: list, interrumpi
     tasa_exito = (exitosos / total * 100) if total else 0.0
 
     with open(RUTA_REPORTE, "w", encoding="utf-8") as archivo:
-        archivo.write("# Reporte de Pruebas Automatizadas del Agente Alicorp\n\n")
+        archivo.write("# Reporte de Pruebas Automatizadas del Agente Nexus Logistics & Tech\n\n")
 
         if interrumpido:
             archivo.write(
@@ -491,7 +491,7 @@ def construir_argumentos() -> argparse.Namespace:
     """Define y parsea los argumentos de línea de comandos."""
     parser = argparse.ArgumentParser(
         description=(
-            "Ejecuta las pruebas del agente Alicorp con pausas y descansos "
+            "Ejecuta las pruebas del agente Nexus Logistics & Tech con pausas y descansos "
             "para reducir el uso sostenido de CPU."
         )
     )
