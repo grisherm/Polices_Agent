@@ -7,7 +7,7 @@ export default function TicketPage({ draft, apiUrl, onBack }) {
     nombre: "",
     correo: "",
     area: "",
-    categoria: "Ética y cumplimiento",
+    categoria: "Recursos Humanos y Convivencia",
     urgencia: draft.urgencia || "BAJA",
     detalle: draft.preguntaOriginal,
   });
@@ -134,10 +134,10 @@ export default function TicketPage({ draft, apiUrl, onBack }) {
             <label>
               Categoría
               <select name="categoria" value={form.categoria} onChange={cambiarCampo}>
-                <option>Ética y cumplimiento</option>
-                <option>Seguridad de la información</option>
-                <option>Regalos y atenciones</option>
-                <option>Derechos humanos</option>
+                <option>Recursos Humanos y Convivencia</option>
+                <option>Tecnología y Seguridad de la Información</option>
+                <option>Salud y Seguridad en el Trabajo</option>
+                <option>Finanzas y Administración</option>
                 <option>Otro</option>
               </select>
             </label>

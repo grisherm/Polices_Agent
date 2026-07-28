@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   Activity,
   AlertTriangle,
+  BarChart3,
   BookOpen,
   Bot,
   Check,
@@ -27,6 +28,7 @@ import {
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import MetricsPage from "./MetricsPage";
 import TicketPage from "./TicketPage";
 
 // En produccion React y FastAPI comparten dominio, por eso la URL base queda
@@ -411,6 +413,7 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [policiesOpen, setPoliciesOpen] = useState(false);
   const [ticketDraft, setTicketDraft] = useState(null);
+  const [showMetrics, setShowMetrics] = useState(false);
   const scrollRef = useRef(null);
   const textareaRef = useRef(null);
 
@@ -636,6 +639,10 @@ export default function App() {
     );
   }
 
+  if (showMetrics) {
+    return <MetricsPage apiUrl={API_URL} onBack={() => setShowMetrics(false)} />;
+  }
+
   return (
     <div className="app-shell">
       <div className="ambient ambient--one" />
@@ -724,6 +731,13 @@ export default function App() {
               <small>{policies.length ? `${policies.length} documentos activos` : "Consultar cobertura"}</small>
             </div>
             <ChevronDown size={15} className="side-arrow" />
+          </button>
+          <button className="knowledge-card" type="button" onClick={() => setShowMetrics(true)}>
+            <span><BarChart3 size={17} /></span>
+            <div>
+              <strong>Panel de uso</strong>
+              <small>Consultas por área y tipo</small>
+            </div>
           </button>
           <StatusPill status={apiStatus} />
         </div>

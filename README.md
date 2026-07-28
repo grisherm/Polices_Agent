@@ -30,7 +30,12 @@ siguientes).
 - Generación de respuestas mediante Cohere o Gemini.
 - Verificación de respuestas para reducir información no respaldada.
 - Citaciones con fragmento, archivo de origen y número de página.
-- Listado directo de todas las políticas disponibles.
+- Listado directo de todas las políticas disponibles, agrupadas por área
+  (Recursos Humanos, Tecnología, Salud y Seguridad, Finanzas).
+- Clasificación automática de cada consulta por área de la empresa, visible
+  en la respuesta y en el panel de uso.
+- Panel de uso interno con estadísticas acumuladas: consultas por área y por
+  tipo de respuesta (`/api/metricas`, botón "Panel de uso" en el chat).
 - Formulario para revisar y enviar solicitudes que requieren gestión.
 - Envío de tickets por correo mediante SMTP.
 - API REST documentada automáticamente con FastAPI.
@@ -47,7 +52,7 @@ siguientes).
 | Búsqueda RAG | FAISS, embeddings y recuperación semántica |
 | Documentos | PyMuPDF, Transformers y tokenizador de Hugging Face |
 | Tickets | SMTP y correo electrónico |
-| Despliegue | Docker y Render |
+| Despliegue | Docker (proveedor cloud a elección) |
 
 ## 🏛️ Arquitectura del sistema
 
@@ -153,6 +158,8 @@ Backend/
 ├── triaje.py
 ├── grafo.py
 ├── busqueda_rag.py
+├── areas.py
+├── metricas.py
 ├── memoria.py
 ├── documentos.py
 ├── vectorstore.py
@@ -163,11 +170,12 @@ Backend/
 ├── Dockerfile
 ├── .env.example
 ├── Documentos/
-├── faiss_indexv2/
+├── faiss_indexv2/          (generado, no se versiona)
 └── frontend/
     ├── src/
     │   ├── App.jsx
     │   ├── TicketPage.jsx
+    │   ├── MetricsPage.jsx
     │   ├── main.jsx
     │   └── styles.css
     ├── public/
@@ -189,15 +197,18 @@ contenido cuando la aplicación se ejecuta con `python Main.py`.
 | `triaje.py` | Clasifica la intención, urgencia, datos faltantes y uso del historial. |
 | `grafo.py` | Define los nodos, decisiones y rutas de LangGraph. |
 | `busqueda_rag.py` | Recupera fragmentos, genera una respuesta y la verifica. |
+| `areas.py` | Clasifica políticas y consultas por área de la empresa (sin LLM). |
+| `metricas.py` | Contador en memoria de consultas por área y por tipo de respuesta. |
 | `memoria.py` | Guarda el historial corto y condensa preguntas dependientes. |
 | `documentos.py` | Lee los PDF y los divide en fragmentos cuando se reconstruye el índice. |
 | `vectorstore.py` | Carga, valida o reconstruye el índice FAISS. |
 | `tickets.py` | Valida el formulario, genera un código de referencia y envía el correo. |
 | `Documentos/` | Contiene las políticas corporativas en PDF. |
-| `faiss_indexv2/` | Contiene el índice vectorial y su manifiesto de validación. |
+| `faiss_indexv2/` | Índice vectorial generado localmente; no se versiona (ver `.gitignore`). |
 | `frontend/src/App.jsx` | Contiene el chat y consume `/api/chat`. |
 | `frontend/src/TicketPage.jsx` | Contiene el formulario y consume `/api/tickets`. |
-| `frontend/src/styles.css` | Define los estilos del chat y del formulario. |
+| `frontend/src/MetricsPage.jsx` | Panel de uso interno; consume `/api/metricas`. |
+| `frontend/src/styles.css` | Define los estilos del chat, el formulario y el panel de uso. |
 | `test_agente_ligero.py` | Ejecuta los 45 casos de prueba. |
 | `reporte_pruebas.md` | Guarda el resultado de las pruebas ejecutadas. |
 | `Dockerfile` | Compila React y prepara FastAPI para producción. |
@@ -502,11 +513,19 @@ datos de tickets.
 | Método | Ruta | Descripción |
 | --- | --- | --- |
 | `GET` | `/health` | Indica si el agente terminó de inicializarse. |
-| `GET` | `/api/politicas` | Lista las políticas disponibles. |
+| `GET` | `/api/politicas` | Lista las políticas disponibles, planas y agrupadas por área. |
+| `GET` | `/api/metricas` | Conteo acumulado de consultas por área y por tipo de respuesta. |
 | `POST` | `/api/triaje` | Clasifica una pregunta sin ejecutar el RAG. |
-| `POST` | `/api/chat` | Ejecuta memoria, LangGraph, RAG y verificación. |
+| `POST` | `/api/chat` | Ejecuta memoria, LangGraph, RAG y verificación. Devuelve también el área. |
 | `POST` | `/api/tickets` | Valida el formulario y envía el ticket por correo. |
 | `DELETE` | `/api/chat/historial/{thread_id}` | Elimina el historial de una sesión. |
+
+Cada respuesta de `/api/chat` incluye un campo `area` (Recursos Humanos y
+Convivencia, Tecnología y Seguridad de la Información, Salud y Seguridad en
+el Trabajo, Finanzas y Administración, o General) determinado sin usar un
+LLM adicional: a partir de la fuente de los documentos recuperados por el
+RAG, o por palabras clave cuando no hay documentos (saludo, tickets, etc.).
+Ver `areas.py`.
 
 Acciones finales posibles:
 
