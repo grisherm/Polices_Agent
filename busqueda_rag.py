@@ -24,7 +24,7 @@ PALABRAS_GENERALES = {
     "la", "las", "lo", "los", "me", "mi", "mis", "para", "por",
     "que", "quien", "quienes", "se", "segun", "ser", "si", "son",
     "su", "sus", "un", "una", "uno", "unos", "y",
-    "alicorp", "corporativa", "corporativas", "documento", "empresa",
+    "nexus", "logistics", "tech", "corporativa", "corporativas", "documento", "empresa",
     "informacion", "lineamiento", "lineamientos", "politica", "politicas",
     "regla", "reglas",
 }

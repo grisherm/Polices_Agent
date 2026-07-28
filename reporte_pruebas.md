@@ -5,8 +5,8 @@
 Los 45 casos de `test_agente_ligero.py` fueron reescritos para usar preguntas
 y datos concretos (montos, plazos, porcentajes) verificables en los 9 PDFs de
 políticas de Nexus Logistics & Tech. Sin embargo, este reporte todavía no
-contiene una ejecución real de la suite: el reporte anterior correspondía al
-proyecto original (Alicorp) y se retiró para no dejar resultados que no
+contiene una ejecución real de la suite: el reporte anterior correspondía a
+una versión previa del proyecto y se retiró para no dejar resultados que no
 corresponden al código ni a los documentos actuales del proyecto.
 
 La suite necesita, para ejecutarse:
