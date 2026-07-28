@@ -5,6 +5,7 @@ from typing import Optional, TypedDict
 
 from langgraph.graph import END, START, StateGraph
 
+from areas import agrupar_politicas_por_area, area_de_documentos, area_por_palabras_clave
 from busqueda_rag import recuperar_y_generar_respuesta, verificar_respuesta_rag
 from triaje import ejecutar_triaje
 
@@ -19,6 +20,7 @@ class AgentState(TypedDict, total=False):
     respuesta:        Optional[str]
     citaciones:       list
     accion_final:     str
+    area:             str
 
 
 def construir_grafo(
@@ -75,19 +77,24 @@ def construir_grafo(
     def nodo_respuesta_ok(state: AgentState) -> AgentState:
         """La respuesta está verificada; se envía al usuario con sus citaciones."""
         print("[GRAFO] Nodo: respuesta_ok")
+        documentos = state.get("documentos_rag") or []
         return {
             "respuesta":    state["respuesta_rag"],
-            "citaciones":   state.get("documentos_rag") or [],
+            "citaciones":   documentos,
             "accion_final": "AUTO_RESOLVER",
+            "area":         area_de_documentos(documentos),
         }
 
-    def nodo_no_se(_state: AgentState) -> AgentState:
+    def nodo_no_se(state: AgentState) -> AgentState:
         """El agente no encontró información suficiente en los PDFs."""
         print("[GRAFO] Nodo: no_se")
+        documentos = state.get("documentos_rag") or []
+        area = area_de_documentos(documentos) if documentos else area_por_palabras_clave(state["pregunta"])
         return {
             "respuesta":    "No lo sé.",
             "citaciones":   [],
             "accion_final": "SIN_INFORMACION",
+            "area":         area,
         }
 
     def nodo_pedir_info(state: AgentState) -> AgentState:
@@ -112,6 +119,7 @@ def construir_grafo(
             "respuesta":    respuesta,
             "citaciones":   [],
             "accion_final": "PEDIR_INFO",
+            "area":         area_por_palabras_clave(state["pregunta"]),
         }
 
     def nodo_abrir_ticket(state: AgentState) -> AgentState:
@@ -121,6 +129,9 @@ def construir_grafo(
         urgencia_triaje      = (state.get("triaje") or {}).get("urgencia", "BAJA")
         urgencia             = urgencia_verificador or urgencia_triaje
 
+        documentos = state.get("documentos_rag") or []
+        area = area_de_documentos(documentos) if documentos else area_por_palabras_clave(state["pregunta"])
+
         return {
             "respuesta": (
                 f"Esta solicitud requiere una gestión directa con urgencia "
@@ -129,6 +140,7 @@ def construir_grafo(
             ),
             "citaciones":   [],
             "accion_final": "ABRIR_TICKET",
+            "area":         area,
         }
 
     def nodo_fuera_de_ambito(_state: AgentState) -> AgentState:
@@ -138,6 +150,7 @@ def construir_grafo(
             "respuesta":    "Lo siento, solo puedo responder consultas sobre las políticas de Nexus Logistics & Tech.",
             "citaciones":   [],
             "accion_final": "FUERA_DE_AMBITO",
+            "area":         "General",
         }
 
     def nodo_saludo(_state: AgentState) -> AgentState:
@@ -150,22 +163,28 @@ def construir_grafo(
             ),
             "citaciones":   [],
             "accion_final": "SALUDO",
+            "area":         "General",
         }
 
     def nodo_listar_politicas(_state: AgentState) -> AgentState:
-        """Devuelve el catálogo completo de políticas sin consultar FAISS."""
+        """Devuelve el catálogo completo de políticas agrupado por área, sin consultar FAISS."""
         print("[GRAFO] Nodo: listar_politicas")
-        total   = len(nombres_politicas)
-        listado = "\n".join(
-            f"{numero}. {nombre}"
-            for numero, nombre in enumerate(nombres_politicas, start=1)
-        )
+        total     = len(nombres_politicas)
+        agrupado  = agrupar_politicas_por_area(nombres_politicas)
+
+        bloques = []
+        for area, politicas in agrupado.items():
+            listado = "\n".join(f"  {numero}. {nombre}" for numero, nombre in enumerate(politicas, start=1))
+            bloques.append(f"**{area}**\n{listado}")
+
         return {
             "respuesta": (
-                f"Tengo información sobre {total} políticas de Nexus Logistics & Tech:\n\n{listado}"
+                f"Tengo información sobre {total} políticas de Nexus Logistics & Tech, "
+                f"organizadas por área:\n\n" + "\n\n".join(bloques)
             ),
             "citaciones":   [],
             "accion_final": "LISTAR_POLITICAS",
+            "area":         "General",
         }
 
     def decidir_ruta_triaje(state: AgentState) -> str:

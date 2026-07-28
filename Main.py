@@ -15,9 +15,11 @@ from pydantic import BaseModel, Field
 import uvicorn
 
 import config
+from areas import agrupar_politicas_por_area
 from busqueda_rag import construir_cadena_rag, construir_cadena_verificacion
 from documentos import obtener_nombres_politicas
 from grafo import construir_grafo, guardar_diagrama_grafo
+import metricas
 from memoria import (
     borrar_historial,
     condensar_pregunta,
@@ -137,6 +139,10 @@ class ChatResponse(BaseModel):
     accion_final: str
     triaje: TriageInfo
     citaciones: List[Citation] = Field(default_factory=list)
+    area: str = Field(
+        default="General",
+        description="Área de la empresa a la que corresponde la consulta.",
+    )
 
 
 class TriageOnlyResponse(BaseModel):
@@ -157,10 +163,19 @@ def health_check():
 
 @app.get("/api/politicas", summary="Listar políticas cubiertas")
 def get_politicas():
-    """Retorna la lista de nombres de políticas que el agente tiene indexadas."""
+    """Retorna la lista de nombres de políticas que el agente tiene indexadas, agrupadas por área."""
     if "politicas" not in state:
         raise HTTPException(status_code=503, detail="La API no está completamente cargada aún.")
-    return {"politicas": state["politicas"]}
+    return {
+        "politicas": state["politicas"],
+        "por_area": agrupar_politicas_por_area(state["politicas"]),
+    }
+
+
+@app.get("/api/metricas", summary="Estadísticas de uso del agente")
+def get_metricas():
+    """Retorna el conteo acumulado de consultas por área y por acción final."""
+    return metricas.obtener_metricas()
 
 
 @app.delete("/api/chat/historial/{thread_id}", summary="Borrar historial de una conversación")
@@ -342,12 +357,17 @@ def ask_question(req: ChatRequest):
                     respuesta_final,
                 )
 
+            area_final = resultado.get("area") or "General"
+            accion_final = resultado.get("accion_final") or "PEDIR_INFO"
+            metricas.registrar_evento(area_final, accion_final)
+
         return ChatResponse(
             pregunta=pregunta_original,
             respuesta=respuesta_final,
-            accion_final=resultado.get("accion_final") or "PEDIR_INFO",
+            accion_final=accion_final,
             triaje=triage_info,
             citaciones=citaciones_formateadas,
+            area=area_final,
         )
 
     except Exception as error:
