@@ -21,7 +21,6 @@ import {
   ShieldCheck,
   Sparkles,
   Trash2,
-  UserRound,
   Wifi,
   WifiOff,
   X,
@@ -139,7 +138,7 @@ function getErrorMessage(status, data) {
 function BrandMark({ compact = false }) {
   return (
     <div className={`brand-mark ${compact ? "brand-mark--compact" : ""}`}>
-      <span>A</span>
+      <span>N</span>
       <i />
     </div>
   );
@@ -149,7 +148,7 @@ function StatusPill({ status }) {
   const checking = status === "checking";
   const online = status === "online";
   const Icon = checking ? RefreshCw : online ? Wifi : WifiOff;
-  const label = checking ? "Verificando" : online ? "API conectada" : "API sin conexión";
+  const label = checking ? "Conectando…" : online ? "Todo en línea" : "Sin conexión";
 
   return (
     <div className={`status-pill status-pill--${status}`}>
@@ -207,12 +206,14 @@ function Message({ message, onOpenTicket }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="message__avatar">
-        {isUser ? <UserRound size={17} /> : message.error ? <AlertTriangle size={17} /> : <Bot size={18} />}
-      </div>
+      {!isUser && (
+        <div className="message__avatar">
+          {message.error ? <AlertTriangle size={17} /> : <Bot size={18} />}
+        </div>
+      )}
       <div className="message__body">
         <div className="message__topline">
-          <strong>{isUser ? "Tú" : "Nexus IA"}</strong>
+          {!isUser && <strong>Nexus</strong>}
           <span>{displayTime(message.createdAt)}</span>
           {!isUser && message.action && (
             <span className={`action-badge action-badge--${action.tone}`}>
@@ -297,13 +298,14 @@ function Hero({ onSuggestion }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.12 }}
       >
-        <span className="hero__kicker"><Sparkles size={14} /> Inteligencia corporativa</span>
-        <h1>Decisiones claras,<br /><em>respaldadas por políticas.</em></h1>
+        <span className="hero__kicker"><Sparkles size={14} /> Copiloto Nexus</span>
+        <h1>Cero rodeos.<br /><em>Directo al dato que necesitas.</em></h1>
         <p>
-          Consulta lineamientos internos y recibe respuestas verificadas con sus fuentes documentales.
+          Pregunta lo que sea sobre nuestras políticas internas y recibe una
+          respuesta verificada, con su fuente exacta, en segundos.
         </p>
       </motion.div>
-      <div className="suggestion-grid">
+      <div className="suggestion-row">
         {SUGGESTIONS.map((suggestion, index) => {
           const Icon = suggestion.icon;
           return (
@@ -312,8 +314,8 @@ function Hero({ onSuggestion }) {
               className="suggestion-card"
               key={suggestion.title}
               onClick={() => onSuggestion(suggestion.prompt)}
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: 18 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.18 + index * 0.06 }}
               whileHover={{ y: -4 }}
               whileTap={{ scale: 0.98 }}
@@ -667,7 +669,7 @@ export default function App() {
           <BrandMark compact />
           <div>
             <strong>Nexus <span>IA</span></strong>
-            <small>Asistente normativo</small>
+            <small>Copiloto interno</small>
           </div>
           <button
             className="sidebar__close icon-button"
@@ -750,7 +752,7 @@ export default function App() {
               <Menu size={20} />
             </button>
             <div>
-              <span className="eyebrow">Asistente de políticas</span>
+              <span className="eyebrow">Copiloto Nexus</span>
               <h2>{activeConversation?.title || "Nueva conversación"}</h2>
             </div>
           </div>
@@ -799,7 +801,7 @@ export default function App() {
               value={input}
               onChange={(event) => setInput(event.target.value.slice(0, 1800))}
               onKeyDown={handleKeyDown}
-              placeholder="Consulta una política, requisito o procedimiento…"
+              placeholder="¿Qué necesitas resolver hoy?"
               rows={1}
               disabled={pending}
               aria-label="Mensaje"
