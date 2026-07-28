@@ -33,32 +33,32 @@ import TicketPage from "./TicketPage";
 // vacia y las llamadas son relativas (/api/chat, /health, etc.). Vite usa el
 // proxy de vite.config.js durante el desarrollo local.
 const API_URL = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
-const STORAGE_KEY = "alicorp-ai-conversations-v1";
-const ACTIVE_KEY = "alicorp-ai-active-conversation-v1";
+const STORAGE_KEY = "nexus-ai-conversations-v1";
+const ACTIVE_KEY = "nexus-ai-active-conversation-v1";
 
 const SUGGESTIONS = [
   {
     eyebrow: "Ética",
-    title: "Compromisos corporativos",
-    prompt: "¿Cuáles son los compromisos éticos de Alicorp según su guía?",
+    title: "Código de conducta",
+    prompt: "¿Cuáles son los principios del Código de Ética y Conducta de Nexus Logistics & Tech?",
     icon: ShieldCheck,
   },
   {
-    eyebrow: "Regalos",
-    title: "Proveedores y obsequios",
-    prompt: "¿Cuáles son los requisitos para aceptar un regalo de un proveedor?",
+    eyebrow: "Seguridad laboral",
+    title: "Equipo de protección personal",
+    prompt: "¿Qué equipo de protección personal es obligatorio en bodega?",
     icon: Sparkles,
   },
   {
-    eyebrow: "Seguridad",
-    title: "Protección de información",
+    eyebrow: "Tecnología",
+    title: "Protección de datos",
     prompt: "¿Qué medidas de seguridad de la información debemos seguir?",
     icon: Database,
   },
   {
-    eyebrow: "Cumplimiento",
-    title: "Conflictos de interés",
-    prompt: "¿Qué indica la política sobre los conflictos de interés?",
+    eyebrow: "Finanzas",
+    title: "Viáticos y reembolsos",
+    prompt: "¿Cuál es el monto máximo reembolsable por noche de hospedaje?",
     icon: CircleGauge,
   },
 ];
@@ -210,7 +210,7 @@ function Message({ message, onOpenTicket }) {
       </div>
       <div className="message__body">
         <div className="message__topline">
-          <strong>{isUser ? "Tú" : "Alicorp IA"}</strong>
+          <strong>{isUser ? "Tú" : "Nexus IA"}</strong>
           <span>{displayTime(message.createdAt)}</span>
           {!isUser && message.action && (
             <span className={`action-badge action-badge--${action.tone}`}>
@@ -659,7 +659,7 @@ export default function App() {
         <div className="sidebar__brand">
           <BrandMark compact />
           <div>
-            <strong>Alicorp <span>IA</span></strong>
+            <strong>Nexus <span>IA</span></strong>
             <small>Asistente normativo</small>
           </div>
           <button

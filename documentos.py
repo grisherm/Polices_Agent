@@ -1,4 +1,4 @@
-# Carga los PDF de políticas de Alicorp, los divide en fragmentos y genera
+# Carga los PDF de políticas de Nexus Logistics & Tech, los divide en fragmentos y genera
 # la lista de políticas disponibles para el triaje.
 
 from pathlib import Path

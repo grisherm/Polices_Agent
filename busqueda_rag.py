@@ -294,7 +294,7 @@ def construir_cadena_rag(llm: BaseChatModel):
         [
             (
                 "system",
-                "Eres un especialista en las políticas corporativas de Alicorp.\n\n"
+                "Eres un especialista en las políticas corporativas de Nexus Logistics & Tech.\n\n"
                 "Responde usando únicamente el contexto proporcionado. No uses "
                 "conocimientos externos, no inventes datos y no hagas suposiciones.\n\n"
                 "Primero identifica qué tipo de pregunta recibiste:\n"
@@ -367,7 +367,7 @@ def construir_cadena_verificacion(llm: BaseChatModel):
         [
             (
                 "system",
-                "Eres un verificador de respuestas RAG sobre políticas de Alicorp. "
+                "Eres un verificador de respuestas RAG sobre políticas de Nexus Logistics & Tech. "
                 "No respondas la pregunta ni corrijas la candidata. Evalúa únicamente "
                 "los criterios solicitados.\n\n"
                 "Recibirás una PREGUNTA, un CONTEXTO y una RESPUESTA CANDIDATA. "

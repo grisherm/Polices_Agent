@@ -132,10 +132,10 @@ def construir_grafo(
         }
 
     def nodo_fuera_de_ambito(_state: AgentState) -> AgentState:
-        """La pregunta no tiene relación con Alicorp ni sus políticas."""
+        """La pregunta no tiene relación con Nexus Logistics & Tech ni sus políticas."""
         print("[GRAFO] Nodo: fuera_de_ambito")
         return {
-            "respuesta":    "Lo siento, solo puedo responder consultas sobre las políticas de Alicorp.",
+            "respuesta":    "Lo siento, solo puedo responder consultas sobre las políticas de Nexus Logistics & Tech.",
             "citaciones":   [],
             "accion_final": "FUERA_DE_AMBITO",
         }
@@ -146,7 +146,7 @@ def construir_grafo(
         return {
             "respuesta": (
                 "¡Hola! Soy el asistente virtual de políticas corporativas de "
-                "Alicorp. ¿En qué puedo ayudarte hoy?"
+                "Nexus Logistics & Tech. ¿En qué puedo ayudarte hoy?"
             ),
             "citaciones":   [],
             "accion_final": "SALUDO",
@@ -162,7 +162,7 @@ def construir_grafo(
         )
         return {
             "respuesta": (
-                f"Tengo información sobre {total} políticas de Alicorp:\n\n{listado}"
+                f"Tengo información sobre {total} políticas de Nexus Logistics & Tech:\n\n{listado}"
             ),
             "citaciones":   [],
             "accion_final": "LISTAR_POLITICAS",
