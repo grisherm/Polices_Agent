@@ -17,7 +17,7 @@ COHERE_CHAT_MODEL      = os.getenv("COHERE_CHAT_MODEL", "command-a-03-2025").str
 COHERE_TIMEOUT_SECONDS = float(os.getenv("COHERE_TIMEOUT_SECONDS", "120"))
 
 GEMINI_API_KEY    = os.getenv("GEMINI_API_KEY", "").strip()
-GEMINI_CHAT_MODEL = os.getenv("GEMINI_CHAT_MODEL", "gemini-2.0-flash").strip()
+GEMINI_CHAT_MODEL = os.getenv("GEMINI_CHAT_MODEL", "gemini-3.6-flash").strip()
 
 if LLM_PROVIDER == "cohere" and not COHERE_API_KEY:
     raise RuntimeError("Falta COHERE_API_KEY en el archivo .env.")
